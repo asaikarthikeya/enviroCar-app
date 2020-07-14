@@ -1,0 +1,55 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    compileOptions {
+        sourceCompatibility rootProject.ext.javaCompileVersion
+        targetCompatibility rootProject.ext.javaCompileVersion
+    }
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionCode rootProject.ext.versionCode
+        versionName rootProject.ext.versionName
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+dependencies {
+    // Android dependencies
+    implementation rootProject.ext.supportV7
+
+    // Dependency injection, view injection, event bus ...
+    implementation rootProject.ext.dagger
+    implementation rootProject.ext.otto
+    implementation rootProject.ext.butterKnife
+    annotationProcessor rootProject.ext.daggerCompiler
+    annotationProcessor rootProject.ext.butterknifeCompiler
+
+    // RxJava dependencies
+    implementation rootProject.ext.rxAndroid
+    implementation rootProject.ext.rxJava
+
+    // Retrofit2 dependencies
+    api rootProject.ext.retrofit2
+    api rootProject.ext.retrofitGson2
+    api rootProject.ext.retrofitAdapters2
+    api rootProject.ext.retrofitRxJava2
+
+    // third party
+    implementation rootProject.ext.apacheCommons
+
+
+    // Modules
+    api project(path : ':org.envirocar.core')
+    api project(path : ':org.envirocar.obd')
+}
