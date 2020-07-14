@@ -28,7 +28,7 @@ import com.f2prateek.rx.preferences2.RxSharedPreferences;
 import com.google.common.base.Preconditions;
 
 import org.envirocar.app.R;
-import org.envirocar.app.recording.RecordingType;
+import org.envirocar.recording.RecordingType;
 
 import io.reactivex.Observable;
 

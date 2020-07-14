@@ -16,23 +16,30 @@
  * You should have received a copy of the GNU General Public License along
  * with the enviroCar app. If not, see http://www.gnu.org/licenses/.
  */
-package org.envirocar.app.recording;
+package org.envirocar.recording.events;
 
-import org.envirocar.app.recording.notification.RecordingNotification;
-import org.envirocar.app.recording.strategy.OBDRecordingStrategy;
-
-import dagger.Subcomponent;
+import com.google.common.base.MoreObjects;
 
 /**
- * @author dewall
+ * @author Sai Krishna
  */
-@RecordingScope
-@Subcomponent(modules = {RecordingModule.class})
-public interface RecordingComponent {
+public class GPSSpeedChangeEvent {
 
-    void inject(RecordingService recordingService);
+    public final double mGPSSpeed;
 
-    void inject(OBDRecordingStrategy obdRecordingStrategy);
+    /**
+     * Constructor.
+     *
+     * @param mGPSSpeed the new avrg speed value;
+     */
+    public GPSSpeedChangeEvent(double mGPSSpeed) {
+        this.mGPSSpeed = mGPSSpeed;
+    }
 
-    void inject(RecordingNotification recordingNotification);
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("GPS Speed", mGPSSpeed)
+                .toString();
+    }
 }

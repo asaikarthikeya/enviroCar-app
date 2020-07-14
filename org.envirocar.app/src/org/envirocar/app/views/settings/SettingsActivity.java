@@ -31,7 +31,7 @@ import androidx.preference.PreferenceFragmentCompat;
 
 import org.envirocar.app.R;
 import org.envirocar.app.handler.ApplicationSettings;
-import org.envirocar.app.recording.RecordingType;
+import org.envirocar.recording.RecordingType;
 import org.envirocar.app.views.settings.custom.AutoConnectIntervalPreference;
 import org.envirocar.app.views.settings.custom.GPSTrimDurationPreference;
 import org.envirocar.app.views.settings.custom.SamplingRatePreference;

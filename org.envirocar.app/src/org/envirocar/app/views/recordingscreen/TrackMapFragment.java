@@ -59,7 +59,7 @@ import org.envirocar.app.BaseApplicationComponent;
 import org.envirocar.app.injection.components.MainActivityComponent;
 import org.envirocar.app.injection.modules.MainActivityModule;
 import org.envirocar.app.R;
-import org.envirocar.app.events.TrackPathOverlayEvent;
+import org.envirocar.recording.events.TrackPathOverlayEvent;
 import org.envirocar.app.injection.BaseInjectorFragment;
 import org.envirocar.app.views.trackdetails.MapLayer;
 import org.envirocar.core.logging.Logger;

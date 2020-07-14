@@ -43,7 +43,7 @@ import org.envirocar.app.R;
 import org.envirocar.app.handler.TrackDAOHandler;
 import org.envirocar.app.handler.preferences.UserPreferenceHandler;
 import org.envirocar.app.injection.BaseInjectorFragment;
-import org.envirocar.app.recording.RecordingService;
+import org.envirocar.recording.RecordingService;
 import org.envirocar.app.services.autoconnect.AutoRecordingService;
 import org.envirocar.app.views.logbook.LogbookActivity;
 import org.envirocar.app.views.settings.SettingsActivity;

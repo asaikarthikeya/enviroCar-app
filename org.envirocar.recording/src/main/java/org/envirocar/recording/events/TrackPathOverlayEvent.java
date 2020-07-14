@@ -16,13 +16,28 @@
  * You should have received a copy of the GNU General Public License along
  * with the enviroCar app. If not, see http://www.gnu.org/licenses/.
  */
-package org.envirocar.app.recording;
+package org.envirocar.recording.events;
+
+import org.envirocar.app.views.trackdetails.MapLayer;
 
 /**
  * @author dewall
  */
-public enum RecordingState {
-    RECORDING_INIT,
-    RECORDING_RUNNING,
-    RECORDING_STOPPED
+public class TrackPathOverlayEvent {
+
+    public final MapLayer mTrackOverlay;
+
+    /**
+     * Constructor.
+     *
+     * @param mTrackOverlay
+     */
+    public TrackPathOverlayEvent(MapLayer mTrackOverlay) {
+        this.mTrackOverlay = mTrackOverlay;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
 }

@@ -1,18 +1,18 @@
 /**
  * Copyright (C) 2013 - 2019 the enviroCar community
- *
+ * <p>
  * This file is part of the enviroCar app.
- *
+ * <p>
  * The enviroCar app is free software: you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as published
  * by the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
- *
+ * <p>
  * The enviroCar app is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General
  * Public License for more details.
- *
+ * <p>
  * You should have received a copy of the GNU General Public License along
  * with the enviroCar app. If not, see http://www.gnu.org/licenses/.
  */
@@ -20,9 +20,7 @@ package org.envirocar.app.handler.preferences;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
 import android.preference.PreferenceManager;
-import android.widget.Toast;
 
 import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleObserver;
@@ -32,19 +30,13 @@ import com.squareup.otto.Bus;
 import com.squareup.otto.Produce;
 import com.squareup.otto.Subscribe;
 
-import org.envirocar.app.handler.DAOProvider;
-import org.envirocar.core.ContextInternetAccessProvider;
+import org.envirocar.core.EnviroCarDB;
 import org.envirocar.core.entity.Car;
-import org.envirocar.core.entity.Track;
 import org.envirocar.core.events.NewCarTypeSelectedEvent;
 import org.envirocar.core.events.NewUserSettingsEvent;
-import org.envirocar.core.exception.DataCreationFailureException;
-import org.envirocar.core.exception.NotConnectedException;
-import org.envirocar.core.exception.UnauthorizedException;
 import org.envirocar.core.injection.InjectApplicationScope;
 import org.envirocar.core.logging.Logger;
 import org.envirocar.core.utils.CarUtils;
-import org.envirocar.core.EnviroCarDB;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -54,12 +46,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-
-import io.reactivex.Observable;
 
 
 /**
@@ -77,7 +66,6 @@ public class CarPreferenceHandler implements LifecycleObserver {
     private final Context mContext;
     private final Bus mBus;
     private final UserPreferenceHandler mUserManager;
-    private final DAOProvider mDAOProvider;
     private final EnviroCarDB mEnviroCarDB;
     private final SharedPreferences mSharedPreferences;
 
@@ -93,12 +81,11 @@ public class CarPreferenceHandler implements LifecycleObserver {
      */
     @Inject
     public CarPreferenceHandler(@InjectApplicationScope Context context, Bus bus, UserPreferenceHandler
-            userManager, DAOProvider daoProvider, EnviroCarDB enviroCarDB,
+            userManager, EnviroCarDB enviroCarDB,
                                 SharedPreferences sharedPreferences) {
         this.mContext = context;
         this.mBus = bus;
         this.mUserManager = userManager;
-        this.mDAOProvider = daoProvider;
         this.mEnviroCarDB = enviroCarDB;
         this.mSharedPreferences = sharedPreferences;
 
@@ -132,84 +119,84 @@ public class CarPreferenceHandler implements LifecycleObserver {
 
     }
 
-    public Observable<List<Car>> getAllDeserializedCars() {
-        return Observable.create(emitter -> {
-            emitter.onNext(getDeserialzedCars());
-            emitter.onComplete();
-        });
-    }
-
-    public Observable<List<Car>> downloadRemoteCarsOfUser() {
-        return Observable.just(mUserManager.getUser())
-                .flatMap(user -> mDAOProvider.getSensorDAO().getCarsByUserObservable(user))
-                .map(cars -> {
-                    LOG.info(String.format(
-                            "Successfully downloaded %s remote cars. Add these to the preferences.",
-                            cars.size()));
-                    for (Car car : cars) {
-                        addCar(car);
-                    }
-                    setIsDownloaded(true);
-                    return cars;
-                });
-    }
-
-    public Observable<Car> assertTemporaryCar(Car car) {
-        return Observable.just(car)
-                .flatMap(car1 -> {
-                    LOG.info("assertTemporaryCar() assert whether car is uploaded or the car " +
-                            "needs to be registered.");
-                    // If the car is already uploaded, then just return car instance.
-                    if (CarUtils.isCarUploaded(car1)) {
-                        LOG.info("assertTemporaryCar(): car has already been uploaded");
-                        return Observable.just(car1);
-                    }
-
-                    // the car is already uploaded before but the car has not the right remote id
-                    if (temporaryAlreadyRegisteredCars.containsKey(car1.getId())) {
-                        LOG.info("assertTemporaryCar(): car has already been uploaded");
-                        car1.setId(temporaryAlreadyRegisteredCars.get(car1.getId()));
-                        return Observable.just(car1);
-                    }
-
-                    LOG.info("assertTemporaryCar(): car is not uploaded. Trying to register.");
-                    // create a new car instance.
-                    return registerCar(car1);
-                });
-    }
-
-    private Observable<Car> registerCar(Car car) {
-        LOG.info(String.format("registerCarBeforeUpload(%s)", car.toString()));
-        String oldID = car.getId();
-        return mDAOProvider.getSensorDAO()
-                // Create a new remote car and update the car remote id.
-                .createCarObservable(car)
-                // update all IDs of tracks that have this car as a reference
-                .flatMap(updCar -> updateCarIDsOfTracksObservable(oldID, updCar))
-                // sum all tracks to a list of tracks.
-                .toList()
-                // Just set the current car reference to the updated one and return it.
-                .map(tracks -> {
-                    LOG.info("kommta hier an?");
-                    if (!temporaryAlreadyRegisteredCars.containsKey(oldID))
-                        temporaryAlreadyRegisteredCars.put(oldID, car.getId());
-                    if (getCar().getId().equals(oldID))
-                        setCar(car);
-                    return car;
-                })
-                .toObservable();
-    }
-
-    private Observable<Track> updateCarIDsOfTracksObservable(String oldID, Car car) {
-        return mEnviroCarDB.getAllTracksByCar(oldID, true)
-                .flatMap(tracks -> Observable.fromIterable(tracks))
-                .map(track -> {
-                    LOG.info("Track has been updated! -> [" + track.toString() + "]");
-                    track.setCar(car);
-                    return track;
-                })
-                .concatMap(track -> mEnviroCarDB.updateTrackObservable(track));
-    }
+//    public Observable<List<Car>> getAllDeserializedCars() {
+//        return Observable.create(emitter -> {
+//            emitter.onNext(getDeserialzedCars());
+//            emitter.onComplete();
+//        });
+//    }
+//
+//    public Observable<List<Car>> downloadRemoteCarsOfUser() {
+//        return Observable.just(mUserManager.getUser())
+//                .flatMap(user -> mDAOProvider.getSensorDAO().getCarsByUserObservable(user))
+//                .map(cars -> {
+//                    LOG.info(String.format(
+//                            "Successfully downloaded %s remote cars. Add these to the preferences.",
+//                            cars.size()));
+//                    for (Car car : cars) {
+//                        addCar(car);
+//                    }
+//                    setIsDownloaded(true);
+//                    return cars;
+//                });
+//    }
+//
+//    public Observable<Car> assertTemporaryCar(Car car) {
+//        return Observable.just(car)
+//                .flatMap(car1 -> {
+//                    LOG.info("assertTemporaryCar() assert whether car is uploaded or the car " +
+//                            "needs to be registered.");
+//                    // If the car is already uploaded, then just return car instance.
+//                    if (CarUtils.isCarUploaded(car1)) {
+//                        LOG.info("assertTemporaryCar(): car has already been uploaded");
+//                        return Observable.just(car1);
+//                    }
+//
+//                    // the car is already uploaded before but the car has not the right remote id
+//                    if (temporaryAlreadyRegisteredCars.containsKey(car1.getId())) {
+//                        LOG.info("assertTemporaryCar(): car has already been uploaded");
+//                        car1.setId(temporaryAlreadyRegisteredCars.get(car1.getId()));
+//                        return Observable.just(car1);
+//                    }
+//
+//                    LOG.info("assertTemporaryCar(): car is not uploaded. Trying to register.");
+//                    // create a new car instance.
+//                    return registerCar(car1);
+//                });
+//    }
+//
+//    private Observable<Car> registerCar(Car car) {
+//        LOG.info(String.format("registerCarBeforeUpload(%s)", car.toString()));
+//        String oldID = car.getId();
+//        return mDAOProvider.getSensorDAO()
+//                // Create a new remote car and update the car remote id.
+//                .createCarObservable(car)
+//                // update all IDs of tracks that have this car as a reference
+//                .flatMap(updCar -> updateCarIDsOfTracksObservable(oldID, updCar))
+//                // sum all tracks to a list of tracks.
+//                .toList()
+//                // Just set the current car reference to the updated one and return it.
+//                .map(tracks -> {
+//                    LOG.info("kommta hier an?");
+//                    if (!temporaryAlreadyRegisteredCars.containsKey(oldID))
+//                        temporaryAlreadyRegisteredCars.put(oldID, car.getId());
+//                    if (getCar().getId().equals(oldID))
+//                        setCar(car);
+//                    return car;
+//                })
+//                .toObservable();
+//    }
+//
+//    private Observable<Track> updateCarIDsOfTracksObservable(String oldID, Car car) {
+//        return mEnviroCarDB.getAllTracksByCar(oldID, true)
+//                .flatMap(tracks -> Observable.fromIterable(tracks))
+//                .map(track -> {
+//                    LOG.info("Track has been updated! -> [" + track.toString() + "]");
+//                    track.setCar(car);
+//                    return track;
+//                })
+//                .concatMap(track -> mEnviroCarDB.updateTrackObservable(track));
+//    }
 
     /**
      * Adds the car to the set of cars in the shared preferences.
@@ -321,60 +308,60 @@ public class CarPreferenceHandler implements LifecycleObserver {
         return carList;
     }
 
-    /**
-     * Registers a new car at the server.
-     *
-     * @param car the car to register
-     */
-    public void registerCarAtServer(final Car car) {
-        try {
-            if (car.getFuelType() == null ||
-                    car.getManufacturer() == null ||
-                    car.getModel() == null ||
-                    car.getConstructionYear() == 0 ||
-                    car.getEngineDisplacement() == 0)
-                throw new Exception("Empty value!");
-            if (car.getManufacturer().isEmpty() || car.getModel().isEmpty()) {
-                throw new Exception("Empty value!");
-            }
-
-        } catch (Exception e) {
-            //TODO i18n
-            Toast.makeText(mContext, "Not all values were defined.", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        if (new ContextInternetAccessProvider(mContext).isConnected() &&
-                mUserManager.isLoggedIn()) {
-            new AsyncTask<Void, Void, Void>() {
-
-                @Override
-                protected Void doInBackground(Void... params) {
-                    try {
-                        String sensorId = mDAOProvider.getSensorDAO().createCar(car);
-
-                        //put the sensor id into shared preferences
-                        car.setId(sensorId);
-
-                    } catch (final NotConnectedException e1) {
-                        LOG.warn(e1.getMessage());
-                    } catch (final UnauthorizedException e1) {
-                        LOG.warn(e1.getMessage());
-                    } catch (DataCreationFailureException e1) {
-                        LOG.warn(e1.getMessage());
-                    }
-
-                    return null;
-                }
-
-            }.execute();
-        } else {
-            String uuid = UUID.randomUUID().toString();
-            String sensorId = Car.TEMPORARY_SENSOR_ID.concat(uuid.substring(0, uuid.length() -
-                    Car.TEMPORARY_SENSOR_ID.length()));
-            car.setId(sensorId);
-        }
-    }
+//    /**
+//     * Registers a new car at the server.
+//     *
+//     * @param car the car to register
+//     */
+//    public void registerCarAtServer(final Car car) {
+//        try {
+//            if (car.getFuelType() == null ||
+//                    car.getManufacturer() == null ||
+//                    car.getModel() == null ||
+//                    car.getConstructionYear() == 0 ||
+//                    car.getEngineDisplacement() == 0)
+//                throw new Exception("Empty value!");
+//            if (car.getManufacturer().isEmpty() || car.getModel().isEmpty()) {
+//                throw new Exception("Empty value!");
+//            }
+//
+//        } catch (Exception e) {
+//            //TODO i18n
+//            Toast.makeText(mContext, "Not all values were defined.", Toast.LENGTH_SHORT).show();
+//            return;
+//        }
+//
+//        if (new ContextInternetAccessProvider(mContext).isConnected() &&
+//                mUserManager.isLoggedIn()) {
+//            new AsyncTask<Void, Void, Void>() {
+//
+//                @Override
+//                protected Void doInBackground(Void... params) {
+//                    try {
+//                        String sensorId = mDAOProvider.getSensorDAO().createCar(car);
+//
+//                        //put the sensor id into shared preferences
+//                        car.setId(sensorId);
+//
+//                    } catch (final NotConnectedException e1) {
+//                        LOG.warn(e1.getMessage());
+//                    } catch (final UnauthorizedException e1) {
+//                        LOG.warn(e1.getMessage());
+//                    } catch (DataCreationFailureException e1) {
+//                        LOG.warn(e1.getMessage());
+//                    }
+//
+//                    return null;
+//                }
+//
+//            }.execute();
+//        } else {
+//            String uuid = UUID.randomUUID().toString();
+//            String sensorId = Car.TEMPORARY_SENSOR_ID.concat(uuid.substring(0, uuid.length() -
+//                    Car.TEMPORARY_SENSOR_ID.length()));
+//            car.setId(sensorId);
+//        }
+//    }
 
     @Subscribe
     public void onReceiveNewUserSettingsEvent(NewUserSettingsEvent event) {

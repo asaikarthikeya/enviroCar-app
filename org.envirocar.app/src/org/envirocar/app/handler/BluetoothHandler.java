@@ -32,7 +32,7 @@ import com.google.common.base.Preconditions;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Produce;
 
-import org.envirocar.app.recording.RecordingService;
+import org.envirocar.recording.RecordingService;
 import org.envirocar.app.rxutils.RxBroadcastReceiver;
 import org.envirocar.core.events.bluetooth.BluetoothDeviceDiscoveredEvent;
 import org.envirocar.core.events.bluetooth.BluetoothDeviceSelectedEvent;

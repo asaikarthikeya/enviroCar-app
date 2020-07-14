@@ -30,7 +30,7 @@ import org.envirocar.app.BaseApplicationComponent;
 import org.envirocar.app.injection.components.MainActivityComponent;
 import org.envirocar.app.injection.modules.MainActivityModule;
 import org.envirocar.app.R;
-import org.envirocar.app.events.GPSSpeedChangeEvent;
+import org.envirocar.recording.events.GPSSpeedChangeEvent;
 import org.envirocar.app.injection.BaseInjectorFragment;
 import org.envirocar.core.logging.Logger;
 import org.envirocar.obd.events.SpeedUpdateEvent;

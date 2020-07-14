@@ -18,15 +18,12 @@
  */
 package org.envirocar.app.services.autoconnect;
 
-import android.annotation.TargetApi;
 import android.app.Notification;
-import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 
 import androidx.core.app.NotificationCompat;
 import androidx.lifecycle.Lifecycle;
@@ -37,8 +34,8 @@ import com.squareup.otto.Bus;
 
 import org.envirocar.app.handler.BluetoothHandler;
 import org.envirocar.app.notifications.EnviroCarNotification;
-import org.envirocar.app.recording.RecordingType;
-import org.envirocar.app.recording.notification.RecordingNotification;
+import org.envirocar.recording.RecordingType;
+import org.envirocar.recording.notification.RecordingNotification;
 import org.envirocar.app.views.BaseMainActivity;
 import org.envirocar.core.logging.Logger;
 

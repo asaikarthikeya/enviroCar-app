@@ -28,12 +28,11 @@ import org.envirocar.app.R;
 import org.envirocar.app.handler.agreement.AgreementManager;
 import org.envirocar.app.handler.preferences.CarPreferenceHandler;
 import org.envirocar.app.handler.preferences.UserPreferenceHandler;
-import org.envirocar.app.recording.RecordingService;
+import org.envirocar.recording.RecordingService;
 import org.envirocar.core.utils.rx.Optional;
 import org.envirocar.core.entity.Car;
 import org.envirocar.core.entity.Track;
 import org.envirocar.core.entity.TrackImpl;
-import org.envirocar.core.events.TrackFinishedEvent;
 import org.envirocar.core.injection.InjectApplicationScope;
 import org.envirocar.core.logging.Logger;
 import org.envirocar.core.utils.ServiceUtils;
@@ -247,7 +246,7 @@ public class TrackRecordingHandler {
                     LOGGER.info("Trying to stop track");
 
                     // Fire a new TrackFinishedEvent on the event bus.
-                    mBus.post(new TrackFinishedEvent(currentTrack));
+//                    mBus.post(new TrackFinishedEvent(currentTrack));
                     LOGGER.info("posted via eventbus");
                     track.setTrackStatus(Track.TrackStatus.FINISHED);
 

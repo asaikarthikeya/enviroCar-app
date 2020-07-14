@@ -16,30 +16,30 @@
  * You should have received a copy of the GNU General Public License along
  * with the enviroCar app. If not, see http://www.gnu.org/licenses/.
  */
-package org.envirocar.app.events;
+package org.envirocar.recording.events;
 
 import com.google.common.base.MoreObjects;
 
 /**
  * @author dewall
  */
-public class DrivingDetectedEvent {
+public class DistanceValueUpdateEvent {
 
-    public final boolean mDrivingDetected;
+    public final double mDistanceValue;
 
     /**
      * Constructor.
      *
-     * @param mDrivingDetected the new avrg speed value;
+     * @param mDistanceValue the distance value of the event.
      */
-    public DrivingDetectedEvent(boolean mDrivingDetected) {
-        this.mDrivingDetected = mDrivingDetected;
+    public DistanceValueUpdateEvent(double mDistanceValue) {
+        this.mDistanceValue = mDistanceValue;
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("Driving Detected", mDrivingDetected)
+                .add("Distance", mDistanceValue)
                 .toString();
     }
 }

@@ -16,35 +16,30 @@
  * You should have received a copy of the GNU General Public License along
  * with the enviroCar app. If not, see http://www.gnu.org/licenses/.
  */
-package org.envirocar.app.recording.events;
-
-import androidx.annotation.NonNull;
+package org.envirocar.recording.events;
 
 import com.google.common.base.MoreObjects;
-
-import org.envirocar.app.recording.RecordingType;
 
 /**
  * @author dewall
  */
-public class RecordingTypeSelectedEvent {
+public class DrivingDetectedEvent {
 
-    public final RecordingType recordingType;
+    public final boolean mDrivingDetected;
 
     /**
      * Constructor.
      *
-     * @param recordingType
+     * @param mDrivingDetected the new avrg speed value;
      */
-    public RecordingTypeSelectedEvent(RecordingType recordingType) {
-        this.recordingType = recordingType;
+    public DrivingDetectedEvent(boolean mDrivingDetected) {
+        this.mDrivingDetected = mDrivingDetected;
     }
 
-    @NonNull
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("RecordingType", recordingType.toString())
+                .add("Driving Detected", mDrivingDetected)
                 .toString();
     }
 }

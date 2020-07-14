@@ -16,30 +16,33 @@
  * You should have received a copy of the GNU General Public License along
  * with the enviroCar app. If not, see http://www.gnu.org/licenses/.
  */
-package org.envirocar.app.events;
+package org.envirocar.recording.events;
 
 import com.google.common.base.MoreObjects;
 
 /**
  * @author dewall
  */
-public class DistanceValueUpdateEvent {
+public class StartingTimeEvent {
 
-    public final double mDistanceValue;
+    public final long mStartingTime;
+    public final boolean mIsStarted;
 
     /**
-     * Constructor.
+     * Constuctor.
      *
-     * @param mDistanceValue the distance value of the event.
+     * @param mStartingTime
      */
-    public DistanceValueUpdateEvent(double mDistanceValue) {
-        this.mDistanceValue = mDistanceValue;
+    public StartingTimeEvent(long mStartingTime, boolean isStarted) {
+        this.mStartingTime = mStartingTime;
+        this.mIsStarted = isStarted;
     }
 
     @Override
     public String toString() {
         return MoreObjects.toStringHelper(this)
-                .add("Distance", mDistanceValue)
+                .add("Starting Time", mStartingTime)
+                .add("is started", mIsStarted)
                 .toString();
     }
 }

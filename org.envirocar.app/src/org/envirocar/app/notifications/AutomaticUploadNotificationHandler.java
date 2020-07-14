@@ -2,9 +2,7 @@ package org.envirocar.app.notifications;
 
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
 import android.content.IntentFilter;
 
 import androidx.core.app.NotificationCompat;
@@ -59,7 +57,11 @@ public class AutomaticUploadNotificationHandler {
      * @param notificationManager
      */
     @Inject
-    public AutomaticUploadNotificationHandler(@InjectApplicationScope Context context, UploadTrack uploadTrack, InternetAccessProvider accessProvider, NotificationManager notificationManager, Bus bus) {
+    public AutomaticUploadNotificationHandler(@InjectApplicationScope Context context,
+                                              UploadTrack uploadTrack,
+                                              InternetAccessProvider accessProvider,
+                                              NotificationManager notificationManager,
+                                              Bus bus) {
         this.context = context;
         this.uploadTrack = uploadTrack;
         this.accessProvider = accessProvider;

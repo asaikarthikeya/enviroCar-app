@@ -16,32 +16,30 @@
  * You should have received a copy of the GNU General Public License along
  * with the enviroCar app. If not, see http://www.gnu.org/licenses/.
  */
-package org.envirocar.app.recording.strategy;
+package org.envirocar.recording.events;
 
-import android.app.Service;
-
-import androidx.lifecycle.LifecycleObserver;
-
-import org.envirocar.app.recording.RecordingState;
-import org.envirocar.core.entity.Track;
-
+import com.google.common.base.MoreObjects;
 
 /**
  * @author dewall
  */
-public interface RecordingStrategy extends LifecycleObserver {
+public class AvrgSpeedUpdateEvent {
 
-    interface RecordingListener {
-        void onRecordingStateChanged(RecordingState recordingState);
+    public final int mAvrgSpeed;
 
-        void onTrackFinished(Track track);
+    /**
+     * Constructor.
+     *
+     * @param mAvrgSpeed the new avrg speed value;
+     */
+    public AvrgSpeedUpdateEvent(int mAvrgSpeed) {
+        this.mAvrgSpeed = mAvrgSpeed;
     }
 
-    interface Factory {
-        RecordingStrategy create();
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this)
+                .add("Average Speed", mAvrgSpeed)
+                .toString();
     }
-
-    void startRecording(Service service, RecordingListener listener);
-
-    void stopRecording();
 }

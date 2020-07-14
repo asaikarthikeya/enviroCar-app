@@ -21,8 +21,6 @@ package org.envirocar.app.handler.preferences;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import org.envirocar.app.exception.CacheEmptyException;
-
 /**
  * @author dewall
  */
