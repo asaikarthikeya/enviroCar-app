@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_profile"
+            android:icon="@drawable/others_logbook"
+            android:title="@string/others_logbook" />
+        <item
+            android:id="@+id/nav_orders"
+            android:icon="@drawable/others_settings"
+            android:title="@string/others_settings" />
+        <item
+            android:id="@+id/nav_about_us"
+            android:icon="@drawable/others_help"
+            android:title="@string/others_help" />
+        <item
+            android:id="@+id/nav_terms_and_conditions"
+            android:icon="@drawable/others_bug"
+            android:title="@string/others_report_issue"/>
+        <item
+            android:id="@+id/nav_share"
+            android:icon="@drawable/others_rateus"
+            android:title="@string/others_rate_us" />
+        <item
+            android:id="@+id/nav_log_out"
+            android:icon="@drawable/others_close"
+            android:title="@string/others_close_envirocar" />
+
+
+    </group>
+
+
+</menu>

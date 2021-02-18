@@ -180,4 +180,6 @@
     <!--    Extended MapView    -->
     <!-- ###################### -->
     <string name="mapview_extended_select_phenomena">Attribut Selection</string>
+    <string name="open" translatable="false">"Open"</string>
+    <string name="close" translatable="false">"CLose"</string>
 </resources>

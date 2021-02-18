@@ -27,12 +27,16 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.mapbox.mapboxsdk.Mapbox;
 import com.squareup.otto.Subscribe;
@@ -116,6 +120,10 @@ public class BaseMainActivity extends BaseInjectorActivity {
     private BroadcastReceiver errorInformationReceiver;
     private boolean paused;
 
+    NavigationView navigationView;
+    ActionBarDrawerToggle actionBarDrawerToggle;
+    DrawerLayout drawerLayout;
+
     private Scheduler.Worker mMainThreadWorker = AndroidSchedulers.mainThread().createWorker();
 
 
@@ -146,8 +154,18 @@ public class BaseMainActivity extends BaseInjectorActivity {
     protected void onCreate(Bundle savedInstanceState) {
 //        LOGGER.info("BaseMainActivity : onCreate");
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_base_main_bottom_bar);
+        setContentView(R.layout.activity_base_main_navdrawer);
         ButterKnife.bind(this);
+
+        Toolbar toolbar = findViewById(R.id.envirocar_toolbar);
+        setSupportActionBar(toolbar);
+
+        navigationView = findViewById(R.id.navmenuu);
+        drawerLayout = findViewById(R.id.drawer_layout2);
+
+        actionBarDrawerToggle = new ActionBarDrawerToggle(this,drawerLayout,toolbar,R.string.open,R.string.close);
+        drawerLayout.addDrawerListener(actionBarDrawerToggle);
+        actionBarDrawerToggle.syncState();
 
         navigationBottomBar.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         navigationBottomBar.setSelectedItemId(R.id.navigation_dashboard);
