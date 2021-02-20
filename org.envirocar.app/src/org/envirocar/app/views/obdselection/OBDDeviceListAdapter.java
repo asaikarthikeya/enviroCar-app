@@ -55,7 +55,7 @@ public class OBDDeviceListAdapter extends ArrayAdapter<BluetoothDevice> {
          *
          * @param device the device to delete.
          */
-        void onDeleteOBDDevice(BluetoothDevice device);
+
     }
 
     private final boolean mIsPairedList;
@@ -118,7 +118,6 @@ public class OBDDeviceListAdapter extends ArrayAdapter<BluetoothDevice> {
             // the selection
             if (mIsPairedList) {
                 holder.mRadioButton.setVisibility(View.VISIBLE);
-                holder.mDeleteButton.setVisibility(View.VISIBLE);
             }
 
             convertView.setTag(holder);
@@ -139,7 +138,6 @@ public class OBDDeviceListAdapter extends ArrayAdapter<BluetoothDevice> {
             }
         }
 
-        holder.mDeleteButton.setOnClickListener(v -> mCallback.onDeleteOBDDevice(device));
 
         // Set the radiobutton on click listener.
         holder.mRadioButton.setOnClickListener(v -> {
@@ -150,14 +148,19 @@ public class OBDDeviceListAdapter extends ArrayAdapter<BluetoothDevice> {
                 return;
 
             if (mSelectedRadioButton != null) {
+
                 mSelectedRadioButton.setChecked(false);
                 // Bug. This needs to happen.. dont know why exactly.
                 notifyDataSetInvalidated();
+
             }
+
 
             mSelectedRadioButton = holder.mRadioButton;
             mSelectedRadioButton.setChecked(true);
             mSelectedBluetoothDevice = device;
+
+
 
             // Callback.
             mCallback.onOBDDeviceSelected(device);

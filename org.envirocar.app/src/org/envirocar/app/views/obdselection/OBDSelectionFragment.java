@@ -31,6 +31,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatRadioButton;
 import androidx.appcompat.widget.Toolbar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -79,6 +80,8 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
     @Inject
     protected BluetoothHandler mBluetoothHandler;
 
+    private AppCompatRadioButton mSelectedRadioButton;
+
     @BindView(R.id.activity_obd_selection_layout_content)
     protected View mContentView;
     @BindView(R.id.activity_obd_selection_layout_paired_devices_text)
@@ -96,6 +99,8 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
     // ArrayAdapter for the two different list views.
     private OBDDeviceListAdapter mNewDevicesArrayAdapter;
     private OBDDeviceListAdapter mPairedDevicesAdapter;
+
+    private BluetoothDevice mSelectedBluetoothDevice;
 
     private Disposable mBTDiscoverySubscription;
 
@@ -254,6 +259,9 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
     private void setupListViews() {
         BluetoothDevice selectedBTDevice = mBluetoothHandler.getSelectedBluetoothDevice();
 
+        //BluetoothDevice device;
+
+
         // Initialize the array adapter for both list views
         mNewDevicesArrayAdapter = new OBDDeviceListAdapter(getActivity(), false);
         mPairedDevicesAdapter = new OBDDeviceListAdapter(getActivity(), true, new
@@ -262,19 +270,21 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
                     public void onOBDDeviceSelected(BluetoothDevice device) {
                         LOGGER.info(String.format("onOBDDeviceSelected(%s)", device.getName()));
 
-                        // Set the bluetooth device as the selected device in shared preferences.
-                        mBluetoothHandler.setSelectedBluetoothDevice(device);
 
-                        // Show a snackbar
-                        showSnackbar(String.format(getString(
-                                R.string.obd_selection_is_selected_template), device.getName()));
-                    }
 
-                    @Override
-                    public void onDeleteOBDDevice(BluetoothDevice device) {
-                        LOGGER.info(String.format("onDeleteOBDDevice(%s)", device.getName()));
+                            Toast.makeText(getActivity(), "This is my Toast message!",
+                                    Toast.LENGTH_LONG).show();
+                            // Set the bluetooth device as the selected device in shared preferences.
+                            mBluetoothHandler.setSelectedBluetoothDevice(device);
+
+                            // Show a snackbar
+                            showSnackbar(String.format(getString(
+                                    R.string.obd_selection_is_selected_template), device.getName()));
+
                         showUnpairingDialig(device);
                     }
+
+
                 }, selectedBTDevice);
 
         // Set the adapter for both list views
@@ -324,7 +334,7 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
         // Set toolbar style
         Toolbar toolbar1 = contentView.findViewById(R.id
                 .bluetooth_selection_preference_pairing_dialog_toolbar);
-        toolbar1.setTitle(R.string.obd_selection_dialog_delete_pairing_title);
+        toolbar1.setTitle("Would like to pair");
         toolbar1.setNavigationIcon(R.drawable.ic_bluetooth_white_24dp);
         toolbar1.setTitleTextColor(
                 getResources().getColor(R.color.white_cario));
@@ -339,7 +349,7 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
         // Create the AlertDialog.
         new MaterialDialog.Builder(getActivity())
                 .customView(contentView, false)
-                .positiveText(R.string.bluetooth_pairing_preference_dialog_remove_pairing)
+                .positiveText("pairing")
                 .negativeText(R.string.menu_cancel)
                 .callback(new MaterialDialog.ButtonCallback() {
                     @Override
@@ -352,7 +362,7 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
     }
 
     private void unpairDevice(BluetoothDevice device) {
-        // Try to unpair the device
+        // Try to unpair the device old device
         mBluetoothHandler.unpairDevice(device,
                 new BluetoothHandler.BluetoothDeviceUnpairingCallback() {
                     @Override
@@ -401,6 +411,7 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
         final TextView text = view.findViewById(R.id
                 .bluetooth_selection_preference_device_list_entry_text);
 
+        // if paired device and already paired device are not equal
         mBluetoothHandler.pairDevice(device,
                 new BluetoothHandler.BluetoothDevicePairingCallback() {
 
