@@ -7,7 +7,7 @@ dependencies {
     implementation rootProject.ext.supportV7
     implementation 'com.google.android.material:material:1.4.0-beta01'
     implementation rootProject.ext.supportCardview
-    implementation rootProject.ext.supportRecyclerview
+    implementation 'androidx.recyclerview:recyclerview:1.2.0'
     implementation rootProject.ext.supportConstraintLayout
 
     implementation rootProject.ext.supportLifecycleExtension
