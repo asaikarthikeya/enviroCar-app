@@ -101,7 +101,7 @@ ext {
 
 
     // Google dependencies
-    gson = 'com.google.code.gson:gson:2.8.5'
+    gson = 'com.google.code.gson:gson:2.8.6'
     //guava = 'com.google.guava:guava:18.0'
     findBugs = 'com.google.code.findbugs:jsr305:3.0.2'
     playServicesLocation = 'com.google.android.gms:play-services-location:17.0.0'
