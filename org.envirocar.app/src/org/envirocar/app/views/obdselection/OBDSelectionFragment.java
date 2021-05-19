@@ -34,6 +34,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.squareup.otto.Subscribe;
 
 import org.envirocar.app.R;
@@ -303,7 +304,20 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
                     R.string.obd_selection_dialog_pairing_content_template), device.getName()));
 
             // Create the Dialog
-            new AlertDialog.Builder(getActivity())
+
+            new MaterialAlertDialogBuilder(getActivity())
+                    .setView(contentView)
+                    .setPositiveButton(R.string.obd_selection_dialog_pairing_title,
+                            (dialog, which) -> {
+                                // If this button is clicked, pair with the given device
+                                view1.setClickable(false);
+                                pairDevice(device, view1);
+                            })
+                    .setNegativeButton(R.string.cancel, null) // Nothing to do on cancel
+                    .show();
+
+
+            /*new AlertDialog.Builder(getActivity())
                     .setView(contentView)
                     .setPositiveButton(R.string.obd_selection_dialog_pairing_title,
                             (dialog, which) -> {
@@ -313,9 +327,11 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
                             })
                     .setNegativeButton(R.string.cancel, null) // Nothing to do on cancel
                     .create()
-                    .show();
+                    .show();*/
         });
+
     }
+
 
     private void showUnpairingDialig(BluetoothDevice device) {
         View contentView = LayoutInflater.from(getActivity())
@@ -337,6 +353,18 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
                 device.getName()));
 
         // Create the AlertDialog.
+        new MaterialAlertDialogBuilder(getActivity(), R.style.MyThemeOverlay_MaterialComponentsMaterialAlertDialog)
+                .setView(contentView)
+                .setPositiveButton(R.string.bluetooth_pairing_preference_dialog_remove_pairing,
+                        (dialog, which) -> {
+                            LOGGER.debug("OnPositiveButton clicked to remove pairing.");
+                            unpairDevice(device);
+                        })
+                .setNegativeButton(R.string.menu_cancel,null) // Nothing to do on cancel
+                .create()
+                .show();
+        
+        /*
         new MaterialDialog.Builder(getActivity())
                 .customView(contentView, false)
                 .positiveText(R.string.bluetooth_pairing_preference_dialog_remove_pairing)
@@ -348,7 +376,7 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
                         unpairDevice(device);
                     }
                 })
-                .show();
+                .show();*/
     }
 
     private void unpairDevice(BluetoothDevice device) {
