@@ -85,7 +85,7 @@
         <item name="colorAccent">@color/blue_dark_cario</item>
     </style>
 
-    <!-- Alert Dialog -->
+    <!-- Material Dialog -->
     <style name="MaterialDialog" parent="@style/ThemeOverlay.MaterialComponents.MaterialAlertDialog">
         <item name="buttonBarPositiveButtonStyle">@style/PositiveButtonStyle</item>
         <item name="buttonBarNegativeButtonStyle">@style/NegativeButtonStyle</item>

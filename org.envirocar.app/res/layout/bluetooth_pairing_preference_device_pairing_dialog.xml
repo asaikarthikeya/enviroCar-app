@@ -40,5 +40,4 @@
         android:gravity="left|center_vertical"
         android:textSize="15sp"
         android:text="Test"/>
-
 </LinearLayout>

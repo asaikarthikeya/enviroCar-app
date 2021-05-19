@@ -316,7 +316,6 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
                     .create()
                     .show();
         });
-
     }
 
     private void showUnpairingDialig(BluetoothDevice device) {
