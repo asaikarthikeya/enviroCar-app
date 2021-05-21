@@ -40,6 +40,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.squareup.otto.Subscribe;
 
 import org.envirocar.app.R;
@@ -280,14 +281,47 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
         String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
 
         if (EasyPermissions.hasPermissions(getContext(), perms)){
-            // Permission is granted, Now check if GPS is on/off.
 
+            // Permission is granted, Now check if GPS is on/off.
+            final LocationManager manager = (LocationManager) this.getContext().
+                    getSystemService(Context.LOCATION_SERVICE);
+
+            if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER )) {
+                // Request user to enable GPS as location is needed discover new devices
+                buildAlertMessageNoGps();
+            }
         }
         else{
             // Dialog requesting the user to allow location permission.
             EasyPermissions.requestPermissions(this,getString(R.string.location_permission_to_discover_newdevices),
                                             REQUEST_LOCATION_PERMISSION, perms);
         }
+    }
+
+    private void buildAlertMessageNoGps(){
+
+        View contentView = LayoutInflater.from(getActivity())
+                .inflate(R.layout.bluetooth_pairing_preference_device_pairing_dialog, null, false);
+
+        // Set toolbar style
+        Toolbar toolbar1 = contentView.findViewById(R.id
+                .bluetooth_selection_preference_pairing_dialog_toolbar);
+        toolbar1.setTitle(getString(R.string.GPS_turnon_title));
+        toolbar1.setNavigationIcon(R.drawable.ic_location_off_white_24dp);
+        toolbar1.setTitleTextColor(
+                getResources().getColor(R.color.white_cario));
+
+        // Set text view
+        TextView textview = contentView.findViewById(R.id
+                .bluetooth_selection_preference_pairing_dialog_text);
+        textview.setText(getString(R.string.GPS_turnon_message));
+
+        new MaterialAlertDialogBuilder(getActivity(),R.style.MaterialDialog)
+                .setView(contentView)
+                .setPositiveButton(getString(R.string.GPS_turnon_yes),
+                        (dialog, id) -> startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
+                .setNegativeButton(getString(R.string.GPS_turnon_no), (dialog, id) -> dialog.cancel())
+                .show();
     }
 
     private void setupListViews() {
