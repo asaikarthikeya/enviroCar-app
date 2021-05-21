@@ -138,7 +138,7 @@ public class LogbookActivity extends BaseInjectorActivity implements LogbookUiLi
                 final Fueling fueling = fuelings.get(position);
 
                 View contentView = LayoutInflater.from(LogbookActivity.this)
-                        .inflate(R.layout.general_layout, null, false);
+                        .inflate(R.layout.general_dialog_layout, null, false);
 
                 // Set toolbar style
                 Toolbar toolbar1 = contentView.findViewById(R.id

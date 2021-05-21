@@ -158,7 +158,7 @@ public class OthersFragment extends BaseInjectorFragment {
     protected void onLogOutClicked() {
 
         View contentView = LayoutInflater.from(getActivity())
-                .inflate(R.layout.general_layout, null, false);
+                .inflate(R.layout.general_dialog_layout, null, false);
 
         // Set toolbar style
         Toolbar toolbar1 = contentView.findViewById(R.id
@@ -184,7 +184,7 @@ public class OthersFragment extends BaseInjectorFragment {
     protected void onCloseEnviroCarClicked() {
 
         View contentView = LayoutInflater.from(getActivity())
-                .inflate(R.layout.general_layout, null, false);
+                .inflate(R.layout.general_dialog_layout, null, false);
 
         // Set toolbar style
         Toolbar toolbar1 = contentView.findViewById(R.id

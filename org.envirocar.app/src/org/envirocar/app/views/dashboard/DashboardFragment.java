@@ -305,7 +305,7 @@ public class DashboardFragment extends BaseInjectorFragment {
         } else if (menuItem.getItemId() == R.id.dashboard_action_logout) {
             // show a logout dialog
             View contentView = LayoutInflater.from(getActivity())
-                    .inflate(R.layout.general_layout, null, false);
+                    .inflate(R.layout.general_dialog_layout, null, false);
 
             // Set toolbar style
             Toolbar toolbar1 = contentView.findViewById(R.id
