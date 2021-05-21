@@ -83,5 +83,6 @@
 
     <style name="DialogStyle" parent="Theme.AppCompat.Light.Dialog">
         <item name="colorAccent">@color/blue_dark_cario</item>
+        <item name="colorPrimary">@color/cario_color_primary</item>
     </style>
 </resources>

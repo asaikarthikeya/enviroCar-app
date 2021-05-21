@@ -18,8 +18,13 @@
  */
 package org.envirocar.app.views.obdselection;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +35,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 
@@ -43,6 +49,7 @@ import org.envirocar.app.BaseApplicationComponent;
 import org.envirocar.core.events.bluetooth.BluetoothPairingChangedEvent;
 import org.envirocar.core.events.bluetooth.BluetoothStateChangedEvent;
 import org.envirocar.core.logging.Logger;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
 
@@ -55,6 +62,11 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
+import pub.devrel.easypermissions.AfterPermissionGranted;
+import pub.devrel.easypermissions.EasyPermissions;
+
+import static android.content.Context.LOCATION_SERVICE;
+import static androidx.core.content.ContextCompat.getSystemService;
 
 /**
  * TODO JavaDoc
@@ -98,6 +110,8 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
     private OBDDeviceListAdapter mPairedDevicesAdapter;
 
     private Disposable mBTDiscoverySubscription;
+
+    private final int REQUEST_LOCATION_PERMISSION = 1;
 
     @Nullable
     @Override
@@ -180,6 +194,9 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
             return;
         }
 
+        // Check location permissions, location permissions are needed to discover new device.
+        requestLocationPermissions();
+
         // Before starting a fresh discovery of bluetooth devices, clear
         // the current adapter.
         mNewDevicesArrayAdapter.clear();
@@ -249,6 +266,28 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
                         }
                     }
                 });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        EasyPermissions.onRequestPermissionsResult(requestCode,permissions,grantResults,this);
+    }
+
+    @AfterPermissionGranted(REQUEST_LOCATION_PERMISSION)
+    public void requestLocationPermissions() {
+        String[] perms = {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION};
+
+        if (EasyPermissions.hasPermissions(getContext(), perms)){
+            // Permission is granted, Now check if GPS is on/off.
+
+        }
+        else{
+            // Dialog requesting the user to allow location permission.
+            EasyPermissions.requestPermissions(this,getString(R.string.location_permission_to_discover_newdevices),
+                                            REQUEST_LOCATION_PERMISSION, perms);
+        }
     }
 
     private void setupListViews() {
