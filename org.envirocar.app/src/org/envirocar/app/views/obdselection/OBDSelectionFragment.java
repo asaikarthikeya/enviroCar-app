@@ -32,6 +32,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.squareup.otto.Subscribe;
@@ -361,6 +362,8 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
                                 getString(R.string.obd_selection_device_unpaired_template),
                                 device.getName() + " (" + device.getAddress() + ")"));
                         mPairedDevicesAdapter.remove(device);
+                        FragmentTransaction ft = getFragmentManager().beginTransaction();
+                        ft.detach(OBDSelectionFragment.this).attach(OBDSelectionFragment.this).commit();
                     }
 
                     @Override
@@ -368,6 +371,7 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
                         showSnackbar(String.format(
                                 getString(R.string.obd_selection_unpairing_error_template),
                                 device.getName() + " (" + device.getAddress() + ")"));
+
                     }
                 });
     }
