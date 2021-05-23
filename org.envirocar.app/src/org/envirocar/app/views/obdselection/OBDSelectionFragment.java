@@ -430,8 +430,10 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
                         showSnackbar(getString(R.string.obd_selection_pairing_success_template,
                                 device.getName()));
                         mNewDevicesArrayAdapter.remove(device);
-                        mPairedDevicesAdapter.add(device);
-
+                        if (!mPairedDevicesAdapter.contains(device)) {
+                            mPairedDevicesAdapter.add(device);
+                            mPairedDevicesTextView.setVisibility(View.VISIBLE);
+                        }
                         // Post an event to all registered handlers.
                         mBus.post(new BluetoothPairingChangedEvent(device, true));
                     }
