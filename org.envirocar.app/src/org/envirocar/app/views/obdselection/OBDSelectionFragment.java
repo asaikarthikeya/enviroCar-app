@@ -24,6 +24,7 @@ import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.GpsStatus;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -32,12 +33,16 @@ import android.view.ViewGroup;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -67,6 +72,7 @@ import pub.devrel.easypermissions.AfterPermissionGranted;
 import pub.devrel.easypermissions.EasyPermissions;
 
 import static android.content.Context.LOCATION_SERVICE;
+import static android.location.LocationManager.GPS_PROVIDER;
 import static androidx.core.content.ContextCompat.getSystemService;
 
 /**
@@ -180,10 +186,9 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
             mPairedDevicesAdapter.clear();
             mContentView.setVisibility(View.VISIBLE);
             updatePairedDevicesList();
-            startBluetoothDiscovery();
+            requestGps();
         }
     }
-
     /**
      * Initiates the discovery of other Bluetooth devices.
      */
@@ -196,7 +201,6 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
         }
 
         // Check location permissions, location permissions are needed to discover new device.
-        requestLocationPermissions();
 
         // Before starting a fresh discovery of bluetooth devices, clear
         // the current adapter.
@@ -282,14 +286,9 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
 
         if (EasyPermissions.hasPermissions(getContext(), perms)){
 
+            showSnackbar("permissions granted from storage");
+            startBluetoothDiscovery();
             // Permission is granted, Now check if GPS is on/off.
-            final LocationManager manager = (LocationManager) this.getContext().
-                    getSystemService(Context.LOCATION_SERVICE);
-
-            if ( !manager.isProviderEnabled( LocationManager.GPS_PROVIDER )) {
-                // Request user to enable GPS as location is needed discover new devices
-                buildAlertMessageNoGps();
-            }
         }
         else{
             // Dialog requesting the user to allow location permission.
@@ -298,30 +297,44 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
         }
     }
 
+    public void requestGps(){
+
+        final LocationManager manager = (LocationManager) this.getContext().
+                getSystemService(LOCATION_SERVICE);
+
+        if ( !manager.isProviderEnabled( GPS_PROVIDER )) {
+            buildAlertMessageNoGps();
+            // Request user to enable GPS as location is needed discover new devices
+        }else {
+            requestLocationPermissions();
+        }
+    }
+
     private void buildAlertMessageNoGps(){
 
-        View contentView = LayoutInflater.from(getActivity())
-                .inflate(R.layout.bluetooth_pairing_preference_device_pairing_dialog, null, false);
+            View contentView = LayoutInflater.from(getActivity())
+                    .inflate(R.layout.bluetooth_pairing_preference_device_pairing_dialog, null, false);
 
-        // Set toolbar style
-        Toolbar toolbar1 = contentView.findViewById(R.id
-                .bluetooth_selection_preference_pairing_dialog_toolbar);
-        toolbar1.setTitle(getString(R.string.GPS_turnon_title));
-        toolbar1.setNavigationIcon(R.drawable.ic_location_off_white_24dp);
-        toolbar1.setTitleTextColor(
-                getResources().getColor(R.color.white_cario));
+            // Set toolbar style
+            Toolbar toolbar1 = contentView.findViewById(R.id
+                    .bluetooth_selection_preference_pairing_dialog_toolbar);
+            toolbar1.setTitle(getString(R.string.GPS_turnon_title));
+            toolbar1.setNavigationIcon(R.drawable.ic_location_off_white_24dp);
+            toolbar1.setTitleTextColor(
+                    getResources().getColor(R.color.white_cario));
 
-        // Set text view
-        TextView textview = contentView.findViewById(R.id
-                .bluetooth_selection_preference_pairing_dialog_text);
-        textview.setText(getString(R.string.GPS_turnon_message));
+            // Set text view
+            TextView textview = contentView.findViewById(R.id
+                    .bluetooth_selection_preference_pairing_dialog_text);
+            textview.setText(getString(R.string.GPS_turnon_message));
 
-        new MaterialAlertDialogBuilder(getActivity(),R.style.MaterialDialog)
-                .setView(contentView)
-                .setPositiveButton(getString(R.string.GPS_turnon_yes),
-                        (dialog, id) -> startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
-                .setNegativeButton(getString(R.string.GPS_turnon_no), (dialog, id) -> dialog.cancel())
-                .show();
+            new MaterialAlertDialogBuilder(getActivity(),R.style.MaterialDialog)
+                    .setView(contentView)
+                    .setPositiveButton(getString(R.string.GPS_turnon_yes), (dialog, id) ->
+                                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
+                    .setNegativeButton(getString(R.string.GPS_turnon_no), (dialog, id) -> dialog.cancel())
+                    .show();
+
     }
 
     private void setupListViews() {
