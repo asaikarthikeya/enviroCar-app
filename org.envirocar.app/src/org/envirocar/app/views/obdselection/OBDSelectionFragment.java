@@ -40,9 +40,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -137,8 +134,9 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
         // Setup the paired devices.
         updatePairedDevicesList();
 
-        // Start the discovery of bluetooth devices.
-        updateContentView();
+        // Check the GPS and Location permissions
+        // before Starting the discovery of bluetooth devices.
+        requestGps();
 
         //        // TODO: very ugly... Instead a dynamic LinearLayout should be used.
         //        setDynamicListHeight(mNewDevicesListView);
@@ -186,7 +184,6 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
             mPairedDevicesAdapter.clear();
             mContentView.setVisibility(View.VISIBLE);
             updatePairedDevicesList();
-            requestGps();
         }
     }
     /**
@@ -299,12 +296,13 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
 
     public void requestGps(){
 
-        final LocationManager manager = (LocationManager) this.getContext().
-                getSystemService(LOCATION_SERVICE);
+        final LocationManager manager = (LocationManager) this.getContext().getSystemService(LOCATION_SERVICE);
 
-        if ( !manager.isProviderEnabled( GPS_PROVIDER )) {
+        // Check whether the GPS is turned or not
+        if (!manager.isProviderEnabled(GPS_PROVIDER)) {
+            // if the GPS is enbled, request user to enable GPS
             buildAlertMessageNoGps();
-            // Request user to enable GPS as location is needed discover new devices
+
         }else {
             requestLocationPermissions();
         }
@@ -312,29 +310,49 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
 
     private void buildAlertMessageNoGps(){
 
-            View contentView = LayoutInflater.from(getActivity())
+        View contentView = LayoutInflater.from(getActivity())
                     .inflate(R.layout.bluetooth_pairing_preference_device_pairing_dialog, null, false);
 
-            // Set toolbar style
-            Toolbar toolbar1 = contentView.findViewById(R.id
+        // Set toolbar style
+        Toolbar toolbar1 = contentView.findViewById(R.id
                     .bluetooth_selection_preference_pairing_dialog_toolbar);
-            toolbar1.setTitle(getString(R.string.GPS_turnon_title));
-            toolbar1.setNavigationIcon(R.drawable.ic_location_off_white_24dp);
-            toolbar1.setTitleTextColor(
-                    getResources().getColor(R.color.white_cario));
+        toolbar1.setTitle(getString(R.string.GPS_turnon_title));
+        toolbar1.setNavigationIcon(R.drawable.ic_location_off_white_24dp);
+        toolbar1.setTitleTextColor(
+                getResources().getColor(R.color.white_cario));
 
-            // Set text view
-            TextView textview = contentView.findViewById(R.id
+        // Set text view
+        TextView textview = contentView.findViewById(R.id
                     .bluetooth_selection_preference_pairing_dialog_text);
-            textview.setText(getString(R.string.GPS_turnon_message));
+        textview.setText(getString(R.string.GPS_turnon_message));
 
-            new MaterialAlertDialogBuilder(getActivity(),R.style.MaterialDialog)
-                    .setView(contentView)
-                    .setPositiveButton(getString(R.string.GPS_turnon_yes), (dialog, id) ->
-                                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
-                    .setNegativeButton(getString(R.string.GPS_turnon_no), (dialog, id) -> dialog.cancel())
-                    .show();
+        final LocationManager manager = (LocationManager) this.getContext().
+                getSystemService(LOCATION_SERVICE);
 
+        new MaterialAlertDialogBuilder(getActivity(),R.style.MaterialDialog)
+                .setView(contentView)
+                .setPositiveButton("rety", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(intent);
+
+                        // Check if location permissions are granted  and Start discovery
+                        // only after the GPS is also turned on.
+
+                        onResume();
+                    }
+                })
+                .setNegativeButton(getString(R.string.GPS_turnon_no), (dialog, id) -> dialog.cancel())
+                .show();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        requestLocationPermissions();
+        startBluetoothDiscovery();
     }
 
     private void setupListViews() {
