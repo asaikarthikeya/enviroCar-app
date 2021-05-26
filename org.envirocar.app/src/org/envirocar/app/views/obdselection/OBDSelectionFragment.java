@@ -308,6 +308,7 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
                     .setPositiveButton(R.string.obd_selection_dialog_pairing_title,
                             (dialog, which) -> {
                                 // If this button is clicked, pair with the given device
+                                view1.setOnClickListener(null);
                                 view1.setClickable(false);
                                 pairDevice(device, view1);
                             })
