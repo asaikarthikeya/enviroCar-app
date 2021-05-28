@@ -31,27 +31,12 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <TextView
-            android:id="@+id/activity_car_selection_layout_carlist_entry_firstline"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/dashboard_carselection_no_car_selected"
-            android:layout_marginLeft="20sp"
-            android:gravity="center_vertical"
-            android:textSize="16dp"/>
-
-
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
         android:id="@+id/activity_car_selection_layout_carlist_entry_second"
         android:layout_height="wrap_content"
-        android:layout_below="@id/activity_car_selection_layout_carlist_entry_firstline"
         android:layout_marginLeft="10dp">
 
         <ImageView
-            android:id="@+id/activity_car_selection_layout_carlist_entry_icon"
+            android:id="@+id/Imageview"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_centerVertical="true"
@@ -60,16 +45,35 @@
             android:alpha="0.54"
             android:src="@drawable/ic_drive_eta_black_24dp" />
 
+
         <RelativeLayout
+            android:id="@+id/relativeLayout1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@id/activity_car_selection_layout_carlist_entry_icon"
+            android:layout_toRightOf="@+id/Imageview"
             android:orientation="horizontal">
 
             <LinearLayout
+                android:id="@+id/textviewww"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/dashboard_carselection_no_car_selected"
+                    android:gravity="center_vertical"
+                    android:textSize="16dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/activity_car_selection_layout_carlist_entry_year_layout"
-                android:layout_width="60dp"
-                android:layout_height="20dp">
+                android:layout_width="wrap_content"
+                android:layout_below="@+id/textviewww"
+                android:layout_marginTop="10dp"
+                android:layout_height="wrap_content">
 
                 <TextView
                     style="@style/carDetailsSubtitle"
@@ -83,19 +87,11 @@
                     android:layout_width="1dp"
                     android:layout_height="match_parent"
                     android:background="@color/envirocar_color_divider_grey" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/activity_car_selection_layout_carlist_entry_year_data"
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
-                android:layout_alignWithParentIfMissing="true"
-                android:layout_below="@id/activity_car_selection_layout_carlist_entry_year_layout"
-                android:layout_marginTop="8dp">
 
                 <TextView
                     android:id="@+id/activity_car_selection_layout_carlist_entry_year"
                     style="@style/carDetailsSubtitle"
+                    android:layout_marginLeft="10dp"
                     android:text="2004"
                     android:textAlignment="center"
                     android:textSize="13sp" />
@@ -109,10 +105,10 @@
 
             <LinearLayout
                 android:id="@+id/activity_car_selection_layout_carlist_entry_gasoline_layout"
-                android:layout_width="60dp"
-                android:layout_height="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_toRightOf="@id/activity_car_selection_layout_carlist_entry_year_layout">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_below="@+id/activity_car_selection_layout_carlist_entry_year_layout">
 
                 <TextView
                     style="@style/carDetailsSubtitle"
@@ -127,21 +123,10 @@
                     android:layout_height="match_parent"
                     android:background="@color/envirocar_color_divider_grey" />
 
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/activity_car_selection_layout_carlist_entry_gasoline_data"
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/activity_car_selection_layout_carlist_entry_gasoline_layout"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="8dp"
-                android:layout_toRightOf="@id/activity_car_selection_layout_carlist_entry_year_data">
-
                 <TextView
                     android:id="@+id/activity_car_selection_layout_carlist_entry_gasoline"
                     style="@style/carDetailsSubtitle"
+                    android:layout_marginLeft="10dp"
                     android:text="Gasoline"
                     android:textAlignment="center"
                     android:textSize="13sp" />
@@ -151,14 +136,15 @@
                     android:layout_height="match_parent"
                     android:background="@color/envirocar_color_divider_grey" />
 
+
             </LinearLayout>
 
             <LinearLayout
                 android:id="@+id/activity_car_selection_layout_carlist_entry_engine_layout"
                 android:layout_width="wrap_content"
-                android:layout_height="20dp"
-                android:layout_marginLeft="20dp"
-                android:layout_toRightOf="@id/activity_car_selection_layout_carlist_entry_gasoline_layout">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/activity_car_selection_layout_carlist_entry_gasoline_layout">
 
                 <TextView
                     style="@style/carDetailsSubtitle"
@@ -170,26 +156,8 @@
 
             </LinearLayout>
 
-            <LinearLayout
-                android:layout_width="60dp"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/activity_car_selection_layout_carlist_entry_engine_layout"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="8dp"
-                android:layout_toRightOf="@id/activity_car_selection_layout_carlist_entry_gasoline_data">
-
-                <TextView
-                    android:id="@+id/activity_car_selection_layout_carlist_entry_engine"
-                    style="@style/carDetailsSubtitle"
-                    android:text="Gasoline"
-                    android:textAlignment="center"
-                    android:textSize="13sp" />
-
-            </LinearLayout>
-
-
         </RelativeLayout>
-    </RelativeLayout>
+
 
         <RadioButton
             android:id="@+id/activity_car_selection_layout_carlist_entry_radio"
@@ -197,8 +165,11 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/spacing_medium"
-            android:layout_toRightOf="@id/activity_car_selection_layout_carlist_entry_second"
+            android:layout_toRightOf="@id/relativeLayout1"
             android:buttonTint="@color/colorPrimaryDark" />
 
     </RelativeLayout>
+
+
+
 </com.google.android.material.card.MaterialCardView>
