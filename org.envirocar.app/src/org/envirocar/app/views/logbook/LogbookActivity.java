@@ -157,9 +157,6 @@ public class LogbookActivity extends BaseInjectorActivity implements LogbookUiLi
             LOG.info("User is not logged in.");
             headerView.setVisibility(View.GONE);
             newFuelingFab.setVisibility(View.GONE);
-            if (!isNetworkAvailable(getApplication())){
-                showSnackbarInfo(R.string.error_not_connected_to_network);
-            }
             showNotLoggedInInfo();
         }
     }
@@ -234,7 +231,11 @@ public class LogbookActivity extends BaseInjectorActivity implements LogbookUiLi
      * Downloads the fuelings
      */
     private void downloadFuelings() {
+        // If internet connection is ON , downloadFuel data else set background as no internet.
         if (!isNetworkAvailable(getApplication())){
+            headerView.setVisibility(View.GONE);
+            newFuelingFab.setVisibility(View.GONE);
+            noInternetConnection();
             showSnackbarInfo(R.string.error_not_connected_to_network);
         }
 
@@ -334,6 +335,12 @@ public class LogbookActivity extends BaseInjectorActivity implements LogbookUiLi
         showInfoBackground(R.drawable.img_logged_out,
                 R.string.logbook_background_not_logged_in_first,
                 R.string.logbook_background_no_fuelings_second);
+    }
+
+    private void noInternetConnection(){
+        showInfoBackground(R.drawable.img_alert,
+                R.string.logbook_background_no_internet_first,
+                R.string.logbook_background_no_internet_second);
     }
 
     private void showInfoBackground(int imgResource, int firstLine, int secondLine) {
