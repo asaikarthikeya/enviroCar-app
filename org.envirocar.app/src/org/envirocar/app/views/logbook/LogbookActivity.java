@@ -18,6 +18,13 @@
  */
 package org.envirocar.app.views.logbook;
 
+import android.app.Application;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.widget.Toolbar;
@@ -150,7 +157,24 @@ public class LogbookActivity extends BaseInjectorActivity implements LogbookUiLi
             LOG.info("User is not logged in.");
             headerView.setVisibility(View.GONE);
             newFuelingFab.setVisibility(View.GONE);
+            if (!isNetworkAvailable(getApplication())){
+                showSnackbarInfo(R.string.error_not_connected_to_network);
+            }
             showNotLoggedInInfo();
+        }
+    }
+
+    private Boolean isNetworkAvailable(Application application) {
+        ConnectivityManager connectivityManager = (ConnectivityManager)
+                application.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Network nw = connectivityManager.getActiveNetwork();
+            if (nw == null) return false;
+            NetworkCapabilities actNw = connectivityManager.getNetworkCapabilities(nw);
+            return true;
+        } else {
+            NetworkInfo nwInfo = connectivityManager.getActiveNetworkInfo();
+            return true;
         }
     }
 
@@ -210,6 +234,10 @@ public class LogbookActivity extends BaseInjectorActivity implements LogbookUiLi
      * Downloads the fuelings
      */
     private void downloadFuelings() {
+        if (!isNetworkAvailable(getApplication())){
+            showSnackbarInfo(R.string.error_not_connected_to_network);
+        }
+
         LOG.info("downloadFuelings()");
         subscription.add(daoProvider.getFuelingDAO().getFuelingsObservable()
                 .subscribeOn(Schedulers.io())
