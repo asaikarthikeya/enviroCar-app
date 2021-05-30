@@ -21,6 +21,7 @@ package org.envirocar.app.views.obdselection;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothDevice;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,6 +97,7 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
     // ArrayAdapter for the two different list views.
     private OBDDeviceListAdapter mNewDevicesArrayAdapter;
     private OBDDeviceListAdapter mPairedDevicesAdapter;
+    private OBDDeviceListAdapter mTemp;
 
     private Disposable mBTDiscoverySubscription;
 
@@ -180,6 +182,7 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
             return;
         }
 
+
         // Before starting a fresh discovery of bluetooth devices, clear
         // the current adapter.
         mNewDevicesArrayAdapter.clear();
@@ -228,6 +231,7 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
                         }
 
                         showSnackbar("Discovery Finished!");
+                        onResume();
                     }
 
                     @Override
@@ -249,6 +253,27 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
                         }
                     }
                 });
+
+
+
+        /*new CountDownTimer(10000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+            }
+            @Override
+            public void onFinish() {
+                showSnackbar("countdown");
+                if (mPairedDevicesAdapter != mNewDevicesArrayAdapter){
+                    updatePairedDevicesList();
+                }
+            }
+        }.start();*/
+
+    }
+
+    public void onResume() {
+        super.onResume();
+        updatePairedDevicesList();
     }
 
     private void setupListViews() {
@@ -277,6 +302,7 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
                     }
                 }, selectedBTDevice);
 
+        mTemp = mPairedDevicesAdapter;
         // Set the adapter for both list views
         mNewDevicesListView.setAdapter(mNewDevicesArrayAdapter);
         mPairedDevicesListView.setAdapter(mPairedDevicesAdapter);
