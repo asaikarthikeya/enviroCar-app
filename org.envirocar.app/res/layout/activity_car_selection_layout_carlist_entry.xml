@@ -18,7 +18,7 @@
     with the enviroCar app. If not, see http://www.gnu.org/licenses/.
 
 -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="64dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -91,4 +91,4 @@
         android:layout_toRightOf="@id/activity_car_selection_layout_carlist_entry_icon"
         android:background="@color/envirocar_color_divider_grey" />
 
-</RelativeLayout>
+</com.google.android.material.card.MaterialCardView>
