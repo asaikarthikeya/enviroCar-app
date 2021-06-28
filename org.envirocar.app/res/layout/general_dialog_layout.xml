@@ -20,25 +20,25 @@
 
 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent">
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/bluetooth_selection_preference_pairing_dialog_toolbar"
+        android:id="@+id/genral_dialog_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/blue_dark_cario"
-        android:title="Bluetooth Pairing" />
+        android:title="" />
 
     <TextView
-        android:id="@+id/bluetooth_selection_preference_pairing_dialog_text"
+        android:id="@+id/general_dialog_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:layout_gravity="center"
-        android:gravity="left|center_vertical"
         android:textSize="15sp"
-        android:text="Test"/>
+        android:gravity="left|center_vertical"
+        android:text=""/>
 
 </LinearLayout>
