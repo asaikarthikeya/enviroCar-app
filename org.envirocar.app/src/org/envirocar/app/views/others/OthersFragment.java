@@ -31,6 +31,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
@@ -48,6 +49,7 @@ import org.envirocar.app.recording.RecordingService;
 import org.envirocar.app.services.autoconnect.AutoRecordingService;
 import org.envirocar.app.views.logbook.LogbookActivity;
 import org.envirocar.app.views.settings.SettingsActivity;
+import org.envirocar.app.views.utils.DialogUtils;
 import org.envirocar.core.entity.User;
 import org.envirocar.core.logging.Logger;
 import org.envirocar.core.utils.ServiceUtils;
@@ -290,17 +292,17 @@ public class OthersFragment extends BaseInjectorFragment {
     private DisposableCompletableObserver logOut() {
         return new DisposableCompletableObserver() {
             User tempUser=null;
-            MaterialDialog dialog=null;
+            AlertDialog dialog=null;
             @Override
             public void onStart() {
 
                 this.tempUser = mUserManager.getUser();
 
-                this.dialog=new MaterialDialog.Builder(getContext())
-                        .title(R.string.activity_login_logout_progress_dialog_title)
-                        .content(R.string.activity_login_logout_progress_dialog_content)
-                        .progress(true, 0)
-                        .cancelable(false)
+                this.dialog= DialogUtils.createProgressBarDialogBuilder(getContext(),
+                        R.string.activity_login_logout_progress_dialog_title,
+                        R.drawable.ic_logout_white_24dp,
+                        R.string.activity_login_logout_progress_dialog_content)
+                        .setCancelable(false)
                         .show();
             }
             @Override
