@@ -228,6 +228,7 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
                         }
 
                         showSnackbar("Discovery Finished!");
+                        onResume();
                     }
 
                     @Override
@@ -249,6 +250,11 @@ public class OBDSelectionFragment extends BaseInjectorFragment {
                         }
                     }
                 });
+    }
+
+    public void onResume() {
+        super.onResume();
+        updatePairedDevicesList();
     }
 
     private void setupListViews() {
