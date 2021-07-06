@@ -29,7 +29,9 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import org.envirocar.app.BaseApplicationComponent;
 import org.envirocar.app.R;
@@ -71,6 +73,8 @@ public class CarSelectionActivity extends BaseInjectorActivity implements CarSel
     protected View mContentView;
     @BindView(R.id.envirocar_toolbar)
     protected Toolbar mToolbar;
+    @BindView(R.id.activity_car_selection_header)
+    protected View headerView;
     @BindView(R.id.activity_car_selection_layout_exptoolbar)
     protected Toolbar mExpToolbar;
     @BindView(R.id.actvity_car_selection_layout_loading)
@@ -83,6 +87,15 @@ public class CarSelectionActivity extends BaseInjectorActivity implements CarSel
 
     @BindView(R.id.activity_car_selection_layout_carlist)
     protected ListView mCarListView;
+
+    @BindView(R.id.layout_general_info_background)
+    protected View infoBackground;
+    @BindView(R.id.layout_general_info_background_img)
+    protected ImageView infoBackgroundImg;
+    @BindView(R.id.layout_general_info_background_firstline)
+    protected TextView infoBackgroundFirst;
+    @BindView(R.id.layout_general_info_background_secondline)
+    protected TextView infoBackgroundSecond;
 
     @Inject
     protected DAOProvider mDAOProvider;
@@ -118,7 +131,12 @@ public class CarSelectionActivity extends BaseInjectorActivity implements CarSel
         getSupportActionBar().setTitle("");
 //        getSupportActionBar().setTitle(R.string.car_selection_header);
 
-        setupListView();
+        // If no cars present show background image.
+        if (!mCarManager.hasCars()){
+            showbackgroungimage();
+        }else{
+            setupListView();
+        }
     }
 
     @Override
@@ -169,6 +187,8 @@ public class CarSelectionActivity extends BaseInjectorActivity implements CarSel
      * @return true if the card view was not shown.
      */
     private boolean showAddCarFragment() {
+        ECAnimationUtils.animateShowView(this, overlayView, R.anim.fade_in);
+        ECAnimationUtils.animateHideView(this, mFab, R.anim.fade_out);
         if (this.addCarFragment != null && this.addCarFragment.isVisible()) {
             LOG.info("addCarFragment is already visible.");
             return false;
@@ -204,6 +224,8 @@ public class CarSelectionActivity extends BaseInjectorActivity implements CarSel
     }
 
     private void setupListView() {
+
+
         Car selectedCar = mCarManager.getCar();
         List<Car> usedCars = new ArrayList<>();
 
@@ -288,6 +310,22 @@ public class CarSelectionActivity extends BaseInjectorActivity implements CarSel
         Snackbar.make(mFab, msg, Snackbar.LENGTH_LONG).show();
     }
 
+    public void showbackgroungimage(){
+        showInfoBackground(R.drawable.img_alert,R.string.car_selection_error_empty_input,
+                R.string.gasoline);
+        //mFab.setVisibility(View.GONE);
+        headerView.setVisibility(View.GONE);
+
+    }
+
+    private void showInfoBackground(int imgResource, int firstLine, int secondLine) {
+        LOG.info("showInfoBackground()");
+        infoBackgroundImg.setImageResource(imgResource);
+        infoBackgroundFirst.setText(firstLine);
+        infoBackgroundSecond.setText(secondLine);
+        ECAnimationUtils.animateShowView(this, infoBackground, R.anim.fade_in);
+    }
+
     /**
      * Hides the AddCarFragment
      */
@@ -302,6 +340,8 @@ public class CarSelectionActivity extends BaseInjectorActivity implements CarSel
         LOG.info("onCarAdded(Car)");
 
         if (mCarManager.addCar(car)) {
+
+
             mCarListAdapter.addCarItem(car);
             showSnackbar(String.format(getString(R.string.car_selection_successfully_added_tmp),
                     car.getManufacturer(), car.getModel()));
