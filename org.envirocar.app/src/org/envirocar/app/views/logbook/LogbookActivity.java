@@ -18,6 +18,13 @@
  */
 package org.envirocar.app.views.logbook;
 
+import android.app.Application;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
+import android.net.NetworkInfo;
+import android.os.Build;
 import android.os.Bundle;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.widget.Toolbar;
@@ -154,6 +161,20 @@ public class LogbookActivity extends BaseInjectorActivity implements LogbookUiLi
         }
     }
 
+    private Boolean isNetworkAvailable(Application application) {
+        ConnectivityManager connectivityManager = (ConnectivityManager)
+                application.getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            Network nw = connectivityManager.getActiveNetwork();
+            if (nw == null) return false;
+            NetworkCapabilities actNw = connectivityManager.getNetworkCapabilities(nw);
+            return true;
+        } else {
+            NetworkInfo nwInfo = connectivityManager.getActiveNetworkInfo();
+            return true;
+        }
+    }
+
     @Override
     protected void onDestroy() {
         LOG.info("onDestroy()");
@@ -210,6 +231,14 @@ public class LogbookActivity extends BaseInjectorActivity implements LogbookUiLi
      * Downloads the fuelings
      */
     private void downloadFuelings() {
+        // If internet connection is ON , downloadFuel data else set background as no internet.
+        if (!isNetworkAvailable(getApplication())){
+            headerView.setVisibility(View.GONE);
+            newFuelingFab.setVisibility(View.GONE);
+            noInternetConnection();
+            showSnackbarInfo(R.string.error_not_connected_to_network);
+        }
+
         LOG.info("downloadFuelings()");
         subscription.add(daoProvider.getFuelingDAO().getFuelingsObservable()
                 .subscribeOn(Schedulers.io())
@@ -306,6 +335,12 @@ public class LogbookActivity extends BaseInjectorActivity implements LogbookUiLi
         showInfoBackground(R.drawable.img_logged_out,
                 R.string.logbook_background_not_logged_in_first,
                 R.string.logbook_background_no_fuelings_second);
+    }
+
+    private void noInternetConnection(){
+        showInfoBackground(R.drawable.img_alert,
+                R.string.logbook_background_no_internet_first,
+                R.string.logbook_background_no_internet_second);
     }
 
     private void showInfoBackground(int imgResource, int firstLine, int secondLine) {
